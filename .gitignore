@@ -1,0 +1,68 @@
+﻿/Net8APIWEBNLayerCleanArchitectureBestPractice.sln
+# Genel
+.DS_Store
+Thumbs.db
+*.tmp
+
+# IDE'ler ve Editörler
+.idea/
+.vscode/
+*.code-workspace
+
+# Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Bin ve Obj
+bin/
+obj/
+
+# Config Dosyaları
+appsettings.json
+appsettings.Development.json
+appsettings.*.json
+
+# Git için özel
+*.log
+*.lock
+*.log.*
+*.pid
+*.seed
+*.swp
+!.gitignore
+
+# Paketler ve Bağımlılıklar
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build Çıktıları
+dist/
+publish/
+*.dll
+*.exe
+*.pdb
+*.mdb
+*.zip
+*.tar.gz
+*.7z
+*.gz
+*.deb
+
+# Entity Framework Migration
+Migrations/
+
+# Coverage raporları
+coverage/
+
+# Temp dosyalar
+*.tmp
+*.bak
+
+# Visual Studio Code ve Rider gibi IDE dosyaları
+.vscode/
+.idea/
+.vs/
