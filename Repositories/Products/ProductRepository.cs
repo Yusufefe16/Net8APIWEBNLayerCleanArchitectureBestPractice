@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace App.Repositories;
+namespace App.Repositories.Products;
 
 public class ProductRepository(AppDbContext context): GenericRepository<Product>(context), IProductRepository
 {
