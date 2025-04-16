@@ -2,7 +2,7 @@
 
 namespace App.Repositories;
 
-internal interface IGenericRepository<T> where T : class
+public interface IGenericRepository<T> where T : class
 {
     IQueryable<T> GetAll();
     IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
