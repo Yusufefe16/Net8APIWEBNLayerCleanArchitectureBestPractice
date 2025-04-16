@@ -36,11 +36,49 @@ public class ServiceResult<T>
         };
     }
 
-
     public static ServiceResult<T> Fail(string errorMessage,
         HttpStatusCode status = HttpStatusCode.BadRequest)
     {
         return new ServiceResult<T>()
+        {
+            ErrorMessage = [errorMessage],
+            Status = status
+        };
+    }
+}
+public class ServiceResult
+{
+    public List<string>? ErrorMessage { get; set; }
+
+    public bool IsSuccess => ErrorMessage == null || ErrorMessage.Count == 0;
+    public bool IsFail => !IsSuccess;
+    
+    [JsonIgnore] public HttpStatusCode Status { get; set; }
+
+    [JsonIgnore] public string? UrlAsCreated { get; set; }
+    
+    //static factory method
+    public static ServiceResult Success( HttpStatusCode status = HttpStatusCode.OK)
+    {
+        return new ServiceResult()
+        {
+            Status = status
+        };
+    }
+
+    public static ServiceResult SuccessAsCreated(string urlAsCreated)
+    {
+        return new ServiceResult()
+        {
+            Status = HttpStatusCode.Created,
+            UrlAsCreated = urlAsCreated
+        };
+    }
+
+    public static ServiceResult Fail(string errorMessage,
+        HttpStatusCode status = HttpStatusCode.BadRequest)
+    {
+        return new ServiceResult()
         {
             ErrorMessage = [errorMessage],
             Status = status
