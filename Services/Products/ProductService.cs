@@ -25,6 +25,15 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
         return ServiceResult<List<ProductDto>>.Success(productsAsDto);
     }
 
+    public async Task<ServiceResult<List<ProductDto>>> GetPagedAllAsync(int pageNumber, int pageSize)
+    {
+        var products = await productRepository.GetAll().Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+        
+        var productsAsDto = products.Select(product => new ProductDto(product.Id, product.Name, product.Price, product.Stock)).ToList();
+        
+        return ServiceResult<List<ProductDto>>.Success(productsAsDto);
+    }
+
     public async Task<ServiceResult<ProductDto?>> GetByIdAsync(int id)
     {
         var product = await productRepository.GetByIdAsync(id);
@@ -49,7 +58,7 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
 
         await productRepository.AddAsync(product);
         await unitOfWork.SaveChangesAsync();
-        return ServiceResult<CreateProductResponse>.Success(new CreateProductResponse(product.Id));
+        return ServiceResult<CreateProductResponse>.SuccessAsCreated(new CreateProductResponse(product.Id),$"api/products/{product.Id}");
     }
 
     public async Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest request)
