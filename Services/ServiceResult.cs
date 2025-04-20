@@ -69,9 +69,17 @@ public class ServiceResult
             Status = HttpStatusCode.Created
         };
     }
-
-    public static ServiceResult Fail(string errorMessage,
+    public static ServiceResult Fail(List<string> errorMessage,
         HttpStatusCode status = HttpStatusCode.BadRequest)
+    {
+        return new ServiceResult()
+        {
+            ErrorMessage = errorMessage,
+            Status = status
+        };
+    }
+
+    public static ServiceResult Fail(string errorMessage, HttpStatusCode status = HttpStatusCode.BadRequest)
     {
         return new ServiceResult()
         {
