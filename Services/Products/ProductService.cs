@@ -1,11 +1,14 @@
 ﻿using System.Net;
 using App.Repositories;
 using App.Repositories.Products;
+using App.Services.Products.Create;
+using App.Services.Products.Update;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Services.Products;
 
-public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork) : IProductService
+public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork, IMapper mapper) : IProductService
 {
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsync(int count)
     {
@@ -21,7 +24,10 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
     public async Task<ServiceResult<List<ProductDto>>> GetAllListAsync()
     {
         var products = await productRepository.GetAll().ToListAsync();
-        var productsAsDto = products.Select(product => new ProductDto(product.Id, product.Name, product.Price, product.Stock)).ToList();
+        //var productsAsDto = products.Select(product => new ProductDto(product.Id, product.Name, product.Price, product.Stock)).ToList();
+        
+        var productsAsDto = mapper.Map<List<ProductDto>>(products);
+        
         return ServiceResult<List<ProductDto>>.Success(productsAsDto);
     }
 
@@ -29,7 +35,9 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
     {
         var products = await productRepository.GetAll().Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
         
-        var productsAsDto = products.Select(product => new ProductDto(product.Id, product.Name, product.Price, product.Stock)).ToList();
+        //var productsAsDto = products.Select(product => new ProductDto(product.Id, product.Name, product.Price, product.Stock)).ToList();
+        
+        var productsAsDto = mapper.Map<List<ProductDto>>(products);
         
         return ServiceResult<List<ProductDto>>.Success(productsAsDto);
     }
@@ -40,11 +48,14 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
 
         if (product is null)
         {
-            ServiceResult<ProductDto>.Fail("Product not found", HttpStatusCode.NotFound);
+            return ServiceResult<ProductDto?>.Fail("Product not found", HttpStatusCode.NotFound);
         }
 
-        var productDto = new ProductDto(product!.Id, product.Name, product.Price, product.Stock);
-        return ServiceResult<ProductDto>.Success(productDto)!;
+        //var productDto = new ProductDto(product!.Id, product.Name, product.Price, product.Stock);
+        
+        var productAsDto = mapper.Map<ProductDto>(product);
+        
+        return ServiceResult<ProductDto>.Success(productAsDto)!;
     }
 
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
