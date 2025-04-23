@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using App.Repositories;
 using App.Repositories.Products;
-using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
 using AutoMapper;
@@ -88,6 +87,14 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
         {
             return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
         }
+        
+        var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+
+        if (isProductNameExist)
+        {
+            return ServiceResult.Fail("ürün ismi veritabanında bulunmaktadır.",
+                HttpStatusCode.NotFound);
+        }
 
         product.Name = request.Name;
         product.Price = request.Price;
@@ -98,7 +105,7 @@ public class ProductService(IProductRepository productRepository, IUnitOfWork un
         return ServiceResult.Success(HttpStatusCode.NoContent);
     }
 
-    public async Task<ServiceResult> UpdateStockAsync(UpdateProductStockRequest request)
+    public async Task<ServiceResult> UpdateStockAsync(UpdateProductStockRequest.UpdateProductStockRequest request)
     {
         var product = await productRepository.GetByIdAsync(request.ProductId);
         if (product is null)
